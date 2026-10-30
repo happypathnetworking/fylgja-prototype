@@ -886,7 +886,11 @@ registration `fylgja`.
   `in_progress` for ever, and the fixture tool's `-propose` lapsed its 6 minutes. The
   artifact check, which passes the registration's own kind, cloned it on both workers about
   90 s on (`Initialized the local directory for fylgja because it was missing`), and a
-  re-run of the user checks then concluded both; every later check ran. *(10-30;
+  re-run of the user checks then concluded both; every later check ran. **This is a
+  defect of Infrahub 1.11.2**, not a setting: a user check of a read-only registration on a
+  worker with no clone can never succeed, since the kind it asks for is fixed. Fylgja does
+  not work around it; a recreate is followed by an artifact check or a re-run of the user
+  checks, and the report upstream is the operator's (`CLAUDE.md`, State). *(10-30;
   `specs/020-core-orchestrator-split/research.md` §5.28)*
 - Infrahub removes no clone of a deleted repository: each task worker keeps the checkout
   directory of a registration a test made and deleted. *(10-30)*
