@@ -2,9 +2,10 @@
 
 `twin-create --branch fylgja-fixture --dry-run` runs on Prefect's test harness against the real
 Infrahub and a core server of the test's own, started with no INFRAHUB_* and no node login:
-the flow reads the fixture and files snapshot `0940db93…` under the orchestrator's root, and
-the core compiles it to bundle `c3872f5c…` and checks the host, which refuses only the logins
-the test's core lacks. No twin boots: a dry run starts no run, and the host check could not
+the flow reads the fixture and files its snapshot under the orchestrator's root, and the core
+compiles it to a bundle and checks the host (snapshot `0940db93…` and bundle `c3872f5c…` on
+the development host; each install's ids are its own, so neither is pinned here), which
+refuses only the logins the test's core lacks. No twin boots: a dry run starts no run, and the host check could not
 pass. The document is the run's artifact, as a check reads it.
 
     set -a; . local/.env; set +a; orchestrator/.venv/bin/pytest -q orchestrator -m contract \
@@ -15,14 +16,13 @@ import json
 
 import pytest
 
+from fylgja_orchestrator.adapters.infrahub import snapshot
 from fylgja_orchestrator.documents.findings import REJECTION, STATUS_REJECTED
 
 from .conftest import FIXTURE_BRANCH, LOGIN_NAMES, SCOPE, artifact_of, flow_runs_of, use_core
 
 pytestmark = pytest.mark.contract
 
-SNAPSHOT_ID = "0940db93e2ad1244a097824ececdaa6979500b1ddeeef15ca3cd612da68656ef"
-BUNDLE_PREFIX = "c3872f5c"
 LOGIN_UNSET = "host.probe.login_unset"
 
 
@@ -35,15 +35,18 @@ def test_flows_create_from_fixture(platform, own_core, tmp_path, monkeypatch):
 
     # The snapshot the flow filed, under its root, and the one the core was sent.
     filed = sorted(p.name for p in (flows.root / "snapshots").iterdir())
-    assert filed == [f"{SNAPSHOT_ID}.json"], f"the orchestrator's store holds {filed}"
+    assert len(filed) == 1, f"the orchestrator's store holds {filed}"
+    snapshot_id = filed[0].removesuffix(".json")
+    assert snapshot.snapshot_id(snapshot.read(flows.root / "snapshots" / filed[0])) == snapshot_id
     body = json.loads((flows.root / "snapshots" / filed[0]).read_text())
     assert body["snapshot_version"] == "2" and body["probes"] == [], body.keys()
     assert not (flows.root / "twin.json").exists(), "a dry run wrote the orchestrator's record"
 
     # The core's dry run: the bundle compiled, the host refused for the logins alone.
     assert doc.operation == "twin.create", doc.operation
-    assert doc.blocks.get("bundle_id", "").startswith(BUNDLE_PREFIX), doc.blocks
-    assert SNAPSHOT_ID[:8] in text and BUNDLE_PREFIX in text, text
+    bundle_id = doc.blocks.get("bundle_id", "")
+    assert bundle_id and doc.blocks.get("snapshot_id") == snapshot_id, doc.blocks
+    assert snapshot_id[:8] in text and bundle_id[:8] in text, text
     rejections = [f for f in doc.findings if f.severity == REJECTION]
     assert rejections and {f.rule for f in rejections} == {LOGIN_UNSET}, [f.to_dict() for f in rejections]
     assert sorted({f.object for f in rejections}) == sorted(n for n in LOGIN_NAMES if "SRLINUX" in n), rejections

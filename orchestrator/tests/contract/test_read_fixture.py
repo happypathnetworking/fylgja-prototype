@@ -1,6 +1,8 @@
 """The adapter's read of a real Infrahub, as `internal/intent/read_contract_test.go` held the
-Go reader to it (T020; SC-002): the fixture branch reads to its snapshot `0940db93…`, whose
-CTM is `testdata/ctm/three-node.json` but for the envelope; the cables the read cannot place
+Go reader to it (T020; SC-002): the fixture branch reads to a snapshot whose id is the hash
+of its own body (`0940db93…` on the development host; each install's envelope is its own,
+so the id is never pinned here) and whose CTM is `testdata/ctm/three-node.json` but for the
+envelope; the cables the read cannot place
 are omitted; the platforms it refuses are named in one pass; a scope selecting nothing is
 `scope.empty`; an unpinned read records `observed_at` and no `at`, a pinned one sends and
 records its `at` verbatim; Infrahub's refusals of an `at` and of a branch are operational
@@ -31,7 +33,6 @@ from .conftest import FIXTURE_BRANCH, REPO, SCOPE, artifacts_ready_at, read_unde
 
 pytestmark = pytest.mark.contract
 
-FIXTURE_ID = "0940db93e2ad1244a097824ececdaa6979500b1ddeeef15ca3cd612da68656ef"
 LIBRARY_MAPPING = {"reader": mapping.READER, "model": mapping.MODEL, "version": mapping.VERSION}
 
 
@@ -48,9 +49,9 @@ def test_the_fixture_reads_to_its_snapshot_and_the_three_node_ctm(tmp_path):
     answer = adapter.read(FIXTURE_BRANCH, scope=SCOPE, out=str(out), env=adapter.Env())
     assert answer.doc.status == "ok", list(answer.doc.findings)
     assert list(answer.doc.findings) == []
-    assert answer.doc.blocks["snapshot_id"] == FIXTURE_ID
     taken = snapshot.read(out)
-    assert taken["snapshot_id"] == FIXTURE_ID
+    assert taken["snapshot_id"] == snapshot.snapshot_id(taken)
+    assert answer.doc.blocks["snapshot_id"] == taken["snapshot_id"]
     assert taken["probes"] == []
 
     got = taken["ctm"]
