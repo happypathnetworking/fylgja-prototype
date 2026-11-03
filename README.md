@@ -1,6 +1,6 @@
 # Fylgja
 
-[![ci](https://github.com/happypathnetworking/fylgja/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/happypathnetworking/fylgja/actions/workflows/ci.yml)
+[![ci](https://github.com/happypathnetworking/fylgja-prototype/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/happypathnetworking/fylgja-prototype/actions/workflows/ci.yml)
 
 Fylgja builds a **walking twin** of a network from its intent. You name a branch in
 [Infrahub](https://github.com/opsmill/infrahub), and optionally a point in time. Fylgja
@@ -58,7 +58,7 @@ stands the host up: run it from the clone, as the user who will run Fylgja (not 
 asks for `sudo` once.
 
 ```sh
-git clone https://github.com/happypathnetworking/fylgja.git && cd fylgja
+git clone https://github.com/happypathnetworking/fylgja-prototype.git && cd fylgja-prototype
 scripts/bring-up.sh --ceos-tar ~/Downloads/cEOS-lab-4.32.0.2F.tar   # or no flag: SR Linux alone
 ```
 

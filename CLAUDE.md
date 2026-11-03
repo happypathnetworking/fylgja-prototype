@@ -182,12 +182,14 @@ only lab host until M9. Ubuntu 26.04 is the one release the script supports; the
   branch's hash is its own, so each install and each branch has one; the 24.04 install's
   was `4d5b37aa…`); the empty group
   `fylgja-devices`; and the registration `fylgja`, a `CoreReadOnlyRepository` at
-  `https://github.com/happypathnetworking/fylgja.git`, `ref main`, with no credential
+  `https://github.com/happypathnetworking/fylgja-prototype.git` (this repository, renamed
+  from `fylgja` on 2026-11-03, the repository cut's step 6; the registration's `location`
+  updated in place on that day, and both task workers' clones' `origin` set to it by hand,
+  since the update leaves them), `ref main`, with no credential
   ([D-044](docs/decisions.md#d-044)), imported at `c006bf9` on 2026-10-26, at
-  `cb0a8d7` on 2026-10-27, at `842c893` on 2026-10-29 (the template's address lines) and
-  at `504ec98` on 2026-10-30 (020's T039: the checks as the platform's clients, `a24a0ff`
-  cherry-picked onto `main` alone, so `fylgja_api.py` there lacks T035's one comment and
-  tier 3's byte-for-byte precheck refuses this tree until the file is imported again),
+  `cb0a8d7` on 2026-10-27, at `842c893` on 2026-10-29 (the template's address lines), at
+  `504ec98` on 2026-10-30 (020's T039: the checks as the platform's clients) and at
+  `4dd6405` on 2026-11-03 from the renamed URL, its checks this tree's byte for byte,
   whose import
   made the query `device_config` (over the library's kinds), the transform
   `srlinux_device_config` and the definition `srlinux_device_config` → artifact
@@ -715,9 +717,7 @@ Rewritten whole at each release's close, never appended to; rewritten whole at 0
   `fylgja-netbox` on loopback 8800, stopped with its volumes kept (its `main` carries the
   spike's merged change), and its token and admin password are in
   `local/netbox-spike/.env`, beside the throwaway adapter, the first draft of F-025's.
-- **Open, the operator's**: the tree's `infrahub/checks/fylgja_api.py` on `origin`'s `main`
-  and imported, so that `make test-e2e`'s case-9 precheck passes this tree (or the
-  precheck changed to compare code, which changes 015's rule); whether the bring-up
+- **Open, the operator's**: whether the bring-up
   script's `infrahub` part, which recreates the task workers when it copies a changed
   override, should first have the registration cloned, and whether Infrahub's
   `run_user_check` hard-coding `CoreRepository` (`infrahub/git/tasks.py:1193`) is reported

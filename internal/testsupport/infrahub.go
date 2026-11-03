@@ -604,7 +604,7 @@ const ArtifactWait = 180 * time.Second
 // unregistered is what a lookup by name says when main lacks what the registration brings,
 // or a branch predates it: the definition comes with the repository's import, and the
 // group with fylgja-fixture -prepare-main, which makes the registration too.
-const unregistered = "register this repository (github.com/happypathnetworking/fylgja) on main as a " +
+const unregistered = "register this repository (github.com/happypathnetworking/fylgja-prototype) on main as a " +
 	"read-only repository with no credential and wait for its import " +
 	`(docs/development.md, "What Infrahub needs"); a branch created before the import cannot see it`
 

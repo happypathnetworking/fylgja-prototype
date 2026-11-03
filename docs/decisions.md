@@ -1702,7 +1702,7 @@ What it is:
 ### Decision
 
 - **A waypoint is a name for a pinned reference.** The kind is `FylgjaWaypoint`
-  ([schema/fylgja-waypoint.yaml](https://github.com/happypathnetworking/fylgja/blob/1982b7263e0e79c80988ea2055266f3fcc697c72/schema/fylgja-waypoint.yaml), as the tree held it before 014 removed it). It has a series, a
+  ([schema/fylgja-waypoint.yaml](https://github.com/happypathnetworking/fylgja-prototype/blob/1982b7263e0e79c80988ea2055266f3fcc697c72/schema/fylgja-waypoint.yaml), as the tree held it before 014 removed it). It has a series, a
   sequence, a branch, an optional `as_of` and a description. It is unique on series and
   sequence, and branch-agnostic. `--waypoint <series>/<sequence>` on `twin create`, `intent
   read` and `twin step` is resolved to `(branch, at)` before any run starts, at the

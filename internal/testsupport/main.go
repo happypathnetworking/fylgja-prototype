@@ -13,7 +13,7 @@ import (
 // with no credential, which a public repository needs none of.
 const (
 	RepositoryName     = "fylgja"
-	RepositoryLocation = "https://github.com/happypathnetworking/fylgja.git"
+	RepositoryLocation = "https://github.com/happypathnetworking/fylgja-prototype.git"
 	RepositoryRef      = "main"
 )
 

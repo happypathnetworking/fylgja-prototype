@@ -817,6 +817,20 @@ registration `fylgja`.
 - Deleting a `CoreRepository` deletes the query, the transform and the artifact
   definition its import made; a later registration's import makes them anew, with new
   ids. *(10-07)*
+- **A registration's `location` updates in place**: `location` is writable (`read_only`
+  false, `unique` true), and `CoreReadOnlyRepositoryUpdate` writing a new URL answers `ok:
+  true`, keeping the registration's id and every object its import made (both checks, the
+  queries, the transform and the definition, with their ids). **It leaves each task
+  worker's clone fetching from the old URL** (`git remote get-url origin` in
+  `/opt/infrahub/git/<repository id>/main`, unchanged 20 s on), so a renamed repository
+  stays reachable only through GitHub's redirect. `git remote set-url origin <new>` in
+  each worker's clone, as its owner (`root`), points it at the new one; the clone's one
+  commit worktree shares that config. `InfrahubReadOnlyRepositoryImportLastCommit` then
+  moved `commit` 46 s after the call, and both workers held the commit, byte for byte,
+  within about a minute of that. Whether an import would fetch by `location` rather than
+  by the clone's `origin` was not tried: the clones were re-pointed first. A proposed
+  change on a branch made after the import ran both checks and the artifact check from it.
+  *(11-03, the rename to `fylgja-prototype`)*
 
 **Its published Compose**
 
